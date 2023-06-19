@@ -1,0 +1,86 @@
+`html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3DS Touch Screen Game</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <canvas id="canvas" width="240" height="320"></canvas>
+  <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    // Start the game loop
+    requestAnimationFrame(gameLoop);
+
+    function gameLoop() {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the player
+      ctx.fillStyle = "red";
+      ctx.fillRect(100, 100, 50, 50);
+
+      // Check for user input
+      if (window.innerWidth > window.innerHeight) {
+        // The device is in landscape mode
+        if (window.ontouchstart) {
+          // The device has touch support
+          if (event.touches.length == 1) {
+            // There is one touch point
+            var touch = event.touches[0];
+            var x = touch.pageX - canvas.offsetLeft;
+            var y = touch.pageY - canvas.offsetTop;
+            player.x = x;
+            player.y = y;
+          }
+        }
+      } else {
+        // The device is in portrait mode
+        if (window.onmousedown) {
+          // The device has mouse support
+          if (event.button == 0) {
+            // The left mouse button is down
+            var x = event.clientX - canvas.offsetLeft;
+            var y = event.clientY - canvas.offsetTop;
+            player.x = x;
+            player.y = y;
+          }
+        }
+      }
+
+      // Update the player position
+      player.x += player.vx;
+      player.y += player.vy;
+
+      // Check for collisions
+      if (player.x < 0 || player.x > canvas.width) {
+        // The player has collided with the left or right edge of the screen
+        player.vx *= -1;
+      }
+      if (player.y < 0 || player.y > canvas.height) {
+        // The player has collided with the top or bottom edge of the screen
+        player.vy *= -1;
+      }
+
+      // Draw the background
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render the game
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Create the player object
+    var player = {
+      x: 100,
+      y: 100,
+      vx: 0,
+      vy: 0
+    };
+  </script>
+</body>
+</html>
